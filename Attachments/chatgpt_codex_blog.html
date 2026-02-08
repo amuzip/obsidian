@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChatGPT Codex 활용방법: 설치부터 워크플로우 자동화까지</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif; line-height: 1.55; }
+    body { margin: 0; background: #0b0f14; color: #e6edf3; }
+    main { max-width: 980px; margin: 0 auto; padding: 40px 20px 80px; }
+    header { padding: 28px 24px; border: 1px solid #1f2a36; border-radius: 18px; background: #0f1620; }
+    h1 { margin: 0 0 8px; font-size: 30px; letter-spacing: -0.2px; }
+    .subtitle { margin: 0; color: #b6c2cf; font-size: 14px; }
+    .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; color: #9fb0c3; font-size: 12px; }
+    .pill { padding: 4px 10px; border: 1px solid #263445; border-radius: 999px; background: #0b1220; }
+    section { margin-top: 26px; padding: 22px 24px; border: 1px solid #1f2a36; border-radius: 18px; background: #0f1620; }
+    h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: -0.2px; }
+    h3 { margin: 18px 0 8px; font-size: 16px; color: #dbe7f3; }
+    p { margin: 8px 0; color: #d7e0ea; }
+    ul { margin: 10px 0 0 18px; }
+    li { margin: 6px 0; color: #d7e0ea; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre { padding: 14px 14px; border: 1px solid #263445; border-radius: 12px; background: #0b1220; overflow: auto; }
+    .callout { margin-top: 12px; padding: 12px 14px; border-left: 4px solid #7aa2f7; background: #0b1220; border-radius: 12px; border: 1px solid #263445; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { border: 1px solid #263445; padding: 10px 10px; vertical-align: top; }
+    th { text-align: left; background: #0b1220; }
+    a { color: #7aa2f7; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .footer { margin-top: 22px; color: #9fb0c3; font-size: 12px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>ChatGPT Codex 활용방법: 설치부터 워크플로우 자동화까지</h1>
+    <p class="subtitle">Codex를 “코드 생성 기능”이 아닌 “개발 작업을 수행하는 에이전트”로 운용하는 실전 가이드임</p>
+    <div class="meta">
+      <span class="pill">대상: 1인 개발자·팀 리드·PM·리서치 엔지니어</span>
+      <span class="pill">범위: ChatGPT 내 Codex + Codex App + CLI + IDE 확장</span>
+      <span class="pill">목표: 설계·수정·테스트·리뷰·배포 준비의 파이프라인화</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>1. Codex 정의</h2>
+    <p>Codex는 소프트웨어 개발 작업을 끝까지 수행하도록 설계된 OpenAI의 코딩 에이전트임. 코드 작성뿐 아니라 저장소 탐색, 파일 편집, 명령 실행, 테스트 수행, 리뷰까지 작업 단위로 처리하는 구성을 가짐.</p>
+    <div class="callout">
+      <strong>핵심 관점</strong><br/>
+      Codex를 “대화형 코드 생성”으로 취급하면 생산성 상한이 낮아짐.<br/>
+      Codex를 “작업 단위 실행기(Agent)”로 취급하면 품질·속도·재현성이 동시에 상승함.
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Codex를 사용할 수 있는 표면(Surfaces)</h2>
+    <p>Codex는 동일한 계정 맥락에서 여러 표면으로 제공됨. 목적에 따라 표면을 분리하면 효율이 상승함.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>표면</th>
+          <th>적합한 용도</th>
+          <th>강점</th>
+          <th>주의점</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ChatGPT 내 Codex</td>
+          <td>아이디어→설계, 코드 조각 수정, 빠른 질의응답</td>
+          <td>진입장벽 최저, 맥락 공유 용이</td>
+          <td>레포 단위 자동 실행은 설정 방식에 따라 제약 발생 가능</td>
+        </tr>
+        <tr>
+          <td>Codex App(macOS)</td>
+          <td>프로젝트 단위 작업 분배, 멀티 에이전트 병렬 작업</td>
+          <td>프로젝트/스레드/리뷰 패널, worktree·git 기능 지향</td>
+          <td>운영 원칙(브랜치/작업 단위) 미정립 시 산출물 난립 위험</td>
+        </tr>
+        <tr>
+          <td>Codex CLI</td>
+          <td>로컬 디렉터리 기반 수정·실행·테스트 자동화</td>
+          <td>터미널 워크플로우에 직접 결합</td>
+          <td>권한/명령 범위 통제 필요</td>
+        </tr>
+        <tr>
+          <td>IDE 확장(VS Code 등)</td>
+          <td>코드 리뷰, 파일 간 리팩터링, 에디터 내 실행</td>
+          <td>개발 맥락 유지, 미세 수정에 강함</td>
+          <td>규모 큰 작업은 App/CLI로 분리하는 편이 안정적</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3. 시작 절차</h2>
+
+    <h3>3.1 ChatGPT에서 Codex 접근</h3>
+    <ul>
+      <li>ChatGPT에서 Codex를 선택 가능한 상태(플랜/권한) 확인 필요</li>
+      <li>작업 유형을 “질문(Ask)”과 “작업 실행(Code/Task)”로 분리하는 습관 필요</li>
+    </ul>
+
+    <h3>3.2 Codex App 시작</h3>
+    <ul>
+      <li>Codex App 설치 후 ChatGPT 계정으로 로그인 구성 필요</li>
+      <li>프로젝트 단위로 레포지토리 또는 작업 폴더를 연결하는 운영이 유리함</li>
+      <li>작업 단위는 30~120분 분량으로 쪼개는 편이 재현성이 높음</li>
+    </ul>
+
+    <h3>3.3 Codex CLI 시작</h3>
+    <p>CLI는 선택한 디렉터리에서 코드 읽기·수정·명령 실행을 수행하는 구조임.</p>
+    <pre><code># 예시: 작업 단위 지시(개념 예시임)
+# 1) 요구사항 파일을 읽고 TODO 목록 작성
+# 2) TODO 중 1개를 선택해 코드 수정
+# 3) 테스트 실행
+# 4) 변경 요약 및 다음 작업 제안
+</code></pre>
+
+    <div class="callout">
+      <strong>운영 기준</strong><br/>
+      “명령 실행 허용 범위”와 “테스트/린트 우선순위”가 Codex 품질을 결정함.<br/>
+      금지 명령·허용 명령·네트워크 접근 원칙을 문서로 고정하는 편이 안전함.
+    </div>
+  </section>
+
+  <section>
+    <h2>4. 실전 워크플로우 6종</h2>
+
+    <div class="grid">
+      <div class="callout">
+        <strong>WF-1. 설계 중심 개발</strong><br/>
+        입력: 요구사항, 제약조건, 비기능 요건<br/>
+        출력: 설계안(데이터 모델/모듈 경계/테스트 전략) → 코드 구현
+      </div>
+      <div class="callout">
+        <strong>WF-2. 버그 재현→수정</strong><br/>
+        입력: 에러 로그, 재현 절차, 기대/실제 결과<br/>
+        출력: 원인 후보 목록 → 최소 수정 → 회귀 테스트
+      </div>
+      <div class="callout">
+        <strong>WF-3. 리팩터링/모듈화</strong><br/>
+        입력: 성능/가독성 병목, 구조적 부채 설명<br/>
+        출력: 단계적 리팩터링 PR 단위 분해
+      </div>
+      <div class="callout">
+        <strong>WF-4. 테스트 커버리지 확장</strong><br/>
+        입력: 핵심 경로/리스크 경로 정의<br/>
+        출력: 테스트 케이스 목록 → 자동 생성 → 실행 결과 요약
+      </div>
+      <div class="callout">
+        <strong>WF-5. 코드 리뷰 에이전트</strong><br/>
+        입력: PR diff, 설계 의도, 성능 기준<br/>
+        출력: 잠재 버그, 스타일 이슈, 보안 이슈, 대안 제안
+      </div>
+      <div class="callout">
+        <strong>WF-6. 문서화 자동화</strong><br/>
+        입력: 디렉터리 구조, 주요 API, 사용 예시<br/>
+        출력: README/ADR/CHANGELOG 초안
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. 프롬프트 템플릿(복사-사용형)</h2>
+    <p>아래 템플릿은 “작업 단위 실행”을 유도하는 형식임. 문장을 길게 쓰기보다 요구사항과 검증 조건을 명시하는 편이 일관성이 높음.</p>
+
+    <h3>5.1 설계→구현 템플릿</h3>
+    <pre><code>[목표]
+- 기능: (한 줄)
+- 사용자: (한 줄)
+- 제약: (예: 외부 라이브러리 금지/성능 기준/보안 기준)
+
+[입력]
+- 관련 파일/경로:
+- 기존 동작:
+
+[출력]
+- 설계 요약(모듈/데이터/에러 처리)
+- 변경 파일 목록
+- 테스트 계획 및 실행 결과
+</code></pre>
+
+    <h3>5.2 버그 수정 템플릿</h3>
+    <pre><code>[재현]
+1) ...
+2) ...
+[기대]
+- ...
+[실제]
+- ...
+[제약]
+- 수정 범위 최소화
+- 회귀 테스트 필수
+</code></pre>
+
+    <h3>5.3 리뷰 템플릿</h3>
+    <pre><code>다음 diff를 리뷰하고 아래 항목별로 지적사항을 분류함
+- 기능 정확성
+- 경계조건/에러 처리
+- 성능/메모리
+- 보안/권한
+- 테스트 누락
+- 리팩터링 제안
+</code></pre>
+  </section>
+
+  <section>
+    <h2>6. 가상 팀 에이전트로 운영하는 블로그 제작 파이프라인</h2>
+    <p>동일 주제를 다섯 역할로 분해하여 순차 실행하면 병렬 팀과 유사한 성과가 발생함.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>가상 에이전트</th>
+          <th>입력</th>
+          <th>출력</th>
+          <th>검증 기준</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>콘텐츠 디렉터</td>
+          <td>독자·목표·핵심 주장</td>
+          <td>목차/핵심 메시지</td>
+          <td>“한 줄 요약”으로 설명 가능 여부</td>
+        </tr>
+        <tr>
+          <td>SEO 전략가</td>
+          <td>키워드/검색 의도</td>
+          <td>제목/소제목 구조</td>
+          <td>검색 의도-본문 일치 여부</td>
+        </tr>
+        <tr>
+          <td>기술 작가</td>
+          <td>설계+SEO 구조</td>
+          <td>초안/예시</td>
+          <td>재현 가능한 절차 포함 여부</td>
+        </tr>
+        <tr>
+          <td>에디터</td>
+          <td>초안</td>
+          <td>논리/가독성 보정</td>
+          <td>중복 제거, 문단당 주장 1개</td>
+        </tr>
+        <tr>
+          <td>확산 매니저</td>
+          <td>최종 글</td>
+          <td>요약/카드/체크리스트</td>
+          <td>핵심 메시지 손실 여부</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>7. 실패 패턴과 방지책</h2>
+    <ul>
+      <li>요구사항이 모호한 상태에서 코딩 지시를 내리는 패턴 빈발함 → 목표/제약/검증 3요소를 먼저 고정하는 편이 안정적임</li>
+      <li>대규모 변경을 1회 작업으로 지시하는 패턴 빈발함 → 작업 단위를 PR 1개 분량으로 분해하는 편이 재현성 높음</li>
+      <li>테스트 없이 “수정 완료”로 종료하는 패턴 빈발함 → 테스트/린트 실행 결과를 산출물에 포함시키는 규칙 필요</li>
+      <li>보안/권한 경계 미정의 상태에서 명령 실행을 허용하는 패턴 위험함 → 허용 명령 목록과 금지 목록을 명문화하는 편이 안전함</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>8. 레퍼런스(공식)</h2>
+    <p>아래 문서 기반으로 구성함.</p>
+    <ul>
+      <li><a href="https://developers.openai.com/codex/" target="_blank" rel="noopener">OpenAI Developers: Codex</a></li>
+      <li><a href="https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan" target="_blank" rel="noopener">OpenAI Help: Using Codex with your ChatGPT plan</a></li>
+      <li><a href="https://openai.com/index/introducing-codex/" target="_blank" rel="noopener">OpenAI: Introducing Codex</a></li>
+      <li><a href="https://developers.openai.com/codex/cli/" target="_blank" rel="noopener">OpenAI Developers: Codex CLI</a></li>
+      <li><a href="https://openai.com/index/introducing-gpt-5-3-codex/" target="_blank" rel="noopener">OpenAI: Introducing GPT-5.3-Codex</a></li>
+      <li><a href="https://openai.com/index/introducing-the-codex-app/" target="_blank" rel="noopener">OpenAI: Introducing the Codex app</a></li>
+    </ul>
+    <p class="footer">면책: 제품 UI/명칭/플랜 포함 범위는 시점에 따라 변경될 수 있음. 본 문서는 공식 문서의 개념·워크플로우를 기준으로 구성함.</p>
+  </section>
+</main>
+</body>
+</html>

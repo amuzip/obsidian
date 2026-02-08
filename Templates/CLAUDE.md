@@ -621,7 +621,7 @@ Hub 파일(`00_XXX_Hub.md`) 운영 규칙: [[0. Docs/Hub-운영-가이드]]
 
 - **변경 이력**: [[6. Templates/CHANGELOG]]
 - **Hub 시스템**: [[0. Docs/Hub-운영-가이드]]
-- **루트 운영 지침**: [[CLAUDE]]
+- **루트 운영 지침**: [[Templates/CLAUDE]]
 
 ---
 

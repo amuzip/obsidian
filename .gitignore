@@ -7,6 +7,17 @@
 .obsidian/cache
 .obsidian/hotkeys.json
 
+# Obsidian plugins & themes (large binaries)
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/styles.css
+.obsidian/themes/
+
+# Claude agent cache
+.claude/
+
+# Copilot
+copilot/
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -22,7 +33,7 @@ desktop.ini
 *.temp
 *~
 
-# Large media files (optional - uncomment if needed)
+# Large media files
 # *.mp4
 # *.mov
 # *.avi
